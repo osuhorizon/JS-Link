@@ -1,0 +1,28 @@
+{ 
+    "token"  : "discordbot token",
+    "prefix" : "/",
+    "version" : "0.5.2",
+    "versionfull" : "052",
+    "db" :  {
+      "host"  : "localhost",
+      "user" : "username",
+      "password" : "password",
+      "database" : "database"
+    },
+    "gayrizon" : {
+      "verified" : {
+        "channel" : "verify-channel if there is one (currently not needed)",
+        "role" : "verified-role if there is one"
+      },
+      "activity" : {
+        "name" : "on osu!Horizon",
+        "type" : "PLAYiNG"
+      }
+    },
+    "link" : {
+      "servername" : "Horizon",
+      "botname" : "Daydreamer",
+      "serverlink" : "https://lemres.de",
+      "logo" : "https://x.mxnuuel.de/notnanoo-logo.png"
+    }
+}
