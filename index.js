@@ -49,7 +49,7 @@ client.on('ready', async () => {
     console.log(`[${time}] Connected as ${client.user.tag}`);
     client.user.setStatus('online');
     console.log(`[${time}] Updated Status to: online`);
-    client.user.setActivity(config.activity.name , {type: config.activity.type});
+    client.user.setActivity(config.gayrizon.activity.name, {type: config.gayrizon.activity.type});
     console.log(`[${time}] Updated Activity`);
     console.log('-------------------- Stats --------------------')
     console.log(`[${time}] Uptime: ${uptime}`)
