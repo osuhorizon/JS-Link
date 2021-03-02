@@ -134,7 +134,7 @@ client.on('ready', async () => {
     
                     client.guilds.cache.get(config.gayrizon.id).members.fetch(full.id).then(member => {
 
-                        member.setNickname(`${oop.name}`).catch(error => {
+                        member.setNickname(`${full.name}`).catch(error => {
                             console.log(error)
                         });
                     });
