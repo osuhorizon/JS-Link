@@ -81,8 +81,6 @@ client.on('ready', async () => {
 
             });
 
-            const index;
-
             for(index = 0; index < users.length; index++) {
 
                 user = users[index]
