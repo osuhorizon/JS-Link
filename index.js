@@ -93,7 +93,7 @@ client.on('ready', async () => {
 
             for(index2 = 0; index2 < info.length; index2++) {
 
-                full = info[index2]
+                const full = info[index2]
                 target = info[index2].tag
 
                 verified = config.gayrizon.verified.role
@@ -134,7 +134,7 @@ client.on('ready', async () => {
     
                     client.guilds.cache.get(config.gayrizon.id).members.fetch(full.id).then(member => {
 
-                        member.setNickname(`${full.name}`).catch(error => {
+                        member.setNickname(`${oop.name}`).catch(error => {
                             console.log(error)
                         });
                     });
@@ -264,7 +264,7 @@ client.on('message', async message => {
             
                 });
             }
-            
+
             duration = ((1000*60)*5)
             setTimeout(function(){
 
