@@ -101,7 +101,7 @@ client.on('ready', async () => {
 
                 var privileges = 4 % full.rank
 
-                if (privileges == 4){
+                if (privileges = 4){
                     status = true
                 } else {
                     status = false
