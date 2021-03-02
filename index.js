@@ -100,6 +100,7 @@ client.on('ready', async () => {
                 donator = config.gayrizon.donator.role
 
                 var privileges = 4 % full.rank
+                let status;
 
                 if (privileges = 4){
                     status = true
