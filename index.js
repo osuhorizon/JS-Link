@@ -81,7 +81,7 @@ client.on('ready', async () => {
 
             });
 
-            var index;
+            const index;
 
             for(index = 0; index < users.length; index++) {
 
@@ -129,10 +129,6 @@ client.on('ready', async () => {
                                 member.roles.remove(donator)
                             }
                         }
-                    });
-    
-    
-                    client.guilds.cache.get(config.gayrizon.id).members.fetch(full.id).then(member => {
 
                         member.setNickname(`${full.name}`).catch(error => {
                             console.log(error)
