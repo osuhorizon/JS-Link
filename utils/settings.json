@@ -1,4 +1,6 @@
 {
-    "rename" : false,
-    "clan" : false
+    "rename" : true,
+    "clan" : false,
+    "activity" : true,
+    "verify" : false
 }

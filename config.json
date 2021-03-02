@@ -1,8 +1,8 @@
 { 
     "token"  : "discordbot token",
     "prefix" : "/",
-    "version" : "0.5.2",
-    "versionfull" : "052",
+    "version" : "0.7.1",
+    "versionfull" : "071",
     "db" :  {
       "host"  : "localhost",
       "user" : "username",
@@ -10,13 +10,18 @@
       "database" : "database"
     },
     "gayrizon" : {
+      "id" : "discord server id || Required",
+      "owner" : "discord server owner id || Required",
       "verified" : {
-        "channel" : "verify-channel if there is one (currently not needed)",
-        "role" : "verified-role if there is one"
+        "channel" : "verify-channel if there is one || Optional",
+        "role" : "verified-role if there is one || Optional (Toggle in settings)"
+      },
+      "donator" : {
+        "role" : "donator-role || Required"
       },
       "activity" : {
-        "name" : "on osu!Horizon",
-        "type" : "PLAYiNG"
+        "name" : "on osu!Horizon || Optional (Toggle in settings)",
+        "type" : "PLAYiNG || Optional (Toggle in settings)"
       }
     },
     "link" : {
