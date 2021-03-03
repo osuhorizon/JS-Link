@@ -336,6 +336,7 @@ client.on('message', async message => {
             const users = [];
             const users2 = [];
             const users3 = [];
+            const users4 = [];
 
             if(mention){
                 self = false
@@ -393,6 +394,30 @@ client.on('message', async message => {
 
                 self = true
                 rx = 0
+
+                const users_data = await new Promise((resolve) => {
+
+                    con.query(`SELECT id, username from users WHERE discord_identity = ${message.author.id} ORDER BY id ASC`, (err, result) => {
+    
+                        if (err) throw err;
+
+                        resolve(result);
+    
+                    });
+                });
+    
+                users_data.forEach(rusers => {
+    
+                    users4.push(rusers)
+    
+                });
+                info4 = users4[0]
+                if(users4.length > 0){
+                    user = info4.username
+                } else {
+                    message.channel.send("Looks like you're not linked yet!")
+                }
+
             }
                 if(argument[0] && !argument[1]){
                 const users_data = await new Promise((resolve) => {
@@ -401,9 +426,7 @@ client.on('message', async message => {
     
                         if (err) throw err;
 
-                        if(result.length > 0){
                         resolve(result);
-                        }
     
                     });
                 });
@@ -422,7 +445,6 @@ client.on('message', async message => {
 
             }
         }
-            console.log(argument[0], argument[1])
 
                 if(!argument[1]){
                     self = true
@@ -436,9 +458,7 @@ client.on('message', async message => {
                     
                                 if (err) throw err;
                 
-                                if(result){
                                     resolve(result);
-                                }
                     
                             });
                         });
@@ -460,9 +480,8 @@ client.on('message', async message => {
                         self = false
                     }
                 }
-                
+            if(users.length > 0 || users2.length > 0 || users3.length > 0 || users4.length > 0){
             apiurl = `https://${config.api.weburl}/api/v1/users/scores/recent?name=${user}&rx=${rx}`
-            console.log(apiurl)
             userapi = `https://${config.api.weburl}/api/v1/users/full?name=${user}`
 
 
@@ -564,7 +583,9 @@ client.on('message', async message => {
                     message.channel.send(requestEmbed);
                 }
             }
+
             getGay()
+        }
 
         }
 
@@ -637,3 +658,4 @@ client.on('message', async message => {
 });
 
 client.login(config.token);
+
