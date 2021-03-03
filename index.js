@@ -313,6 +313,171 @@ client.on('message', async message => {
         client.commands.get('help').execute(message, args);
     }
 
+    if(command == 'recent'){
+
+
+        if(!settings.recent){
+            message.channel.send("I'm sorry, this command is currently not activated.")
+        } else {
+
+            if (message.mentions.members.size == 1) {
+                let member = message.mentions.members.first()
+                
+                user = member.id
+                mention = true
+            } else {
+                mention = false
+            }
+
+            const arguments = args.join(" ");
+            const argument = arguments.split(' ')
+
+            const users = [];
+
+            if(mention){
+                self = false
+                if(!argument[0].toLowerCase().includes("rx" || "relax" || "ap" || "autopilot" || "auto") || argument[0].includes(member.id)){
+                    rx = 0
+                }
+            }
+
+            if(argument[0].toLowerCase().includes("rx" || "relax")){
+                rx = 1
+            } else if(argument[0].toLowerCase().includes("ap" || "autopilot") || "auto"){
+                rx = 2
+            }
+            if(!argument[1]){
+                self = true
+            } else if(argument[1].includes(member.id)){
+                self = false
+                
+                const users_data = await new Promise((resolve) => {
+
+                    con.query(`SELECT id, username from users WHERE discord_identity = ${member.id} ORDER BY id ASC`, (err, result) => {
+    
+                        if (err) throw err;
+                        resolve(result);
+    
+                    });
+                });
+    
+                users_data.forEach(rusers => {
+    
+                    users.push(rusers)
+    
+                });
+
+                info = users[0]
+                user = info.username
+
+            } else {
+                user = argument[1]
+                self = false
+            }
+
+            apiurl = `https://${config.api.weburl}/api/v1/users/scores/recent?name=${user}&rx=${rx}`
+            userapi = `https://${config.api.weburl}/api/v1/users/full?name=${user}`
+
+
+            function processRecentData(apidata, index, array) {
+                if (apidata.completed = 3){
+
+                    if (recentdata.length <= 10){
+                    recentdata.unshift(apidata);
+                    }
+                }
+            }
+
+            async function getRecent() {
+                const response = await fetch(apiurl);
+                const data = await response.json();
+
+                const userresponse = await fetch (userapi);
+                const userdata = await userresponse.json();
+
+                dusername = user
+                dscore = data.scores[0].score
+                dcombo = data.scores[0].max_combo
+                dfc = data.scores[0].full_combo
+                dmod = data.scores[0].mods
+                ddreihundert = data.scores[0].count_300
+                deinhundert = data.scores[0].count_100
+                dfünfzig = data.scores[0].count_50
+                dmiss = data.scores[0].count_miss
+                daccuracy = data.scores[0].accuracy
+                drank = data.scores[0].rank
+                dcompleted = data.scores[0].completed
+                dbeatmapname = data.scores[0].beatmap.song_name
+                dbeatmapid = data.scores[0].beatmap.beatmap_id
+                dbeatmapsetid = data.scores[0].beatmap.beatmapset_id
+                ddifficultyraw = data.scores[0].beatmap.difficulty
+                dppraw = data.scores[0].pp
+                did = userdata.id
+
+                ddifficulty = String(difficultyraw).substring(0,4)
+                dacc = String(accuracy).substring(0,5)
+                dpp = String(ppraw).substring(0,6)
+
+
+                if (dfc){
+                    dfullcombo = "(FC)"
+                } else {
+                    dfullcombo = ""
+                }
+
+                if (data.code != 200) {
+                    request = failed
+                } else {
+                    request = success
+                    data.scores.forEach(processRecentData);
+                }
+            }
+
+            const recentdata = [];
+
+            getRecent()
+
+            async function getGay(){
+                await getRecent()
+                if(request = failed){
+                    message.channel.send("Couldn't find user.")
+                } else {
+                    const requestEmbed = new Discord.MessageEmbed()
+                    .setColor("#cc99ff")
+                    .setTitle(`Recent for ` + dusername)
+                    .setURL(`https://${config.api.weburl}/u/${did}`)
+                    .setAuthor(dusername, `https://a.lemres.de/${did}`)
+                    .setDescription(`This Score has been played on ${config.link.servername}`)
+                    .setThumbnail(`https://a.lemres.de/${did}`)
+                    .addFields(
+                    { name: 'Map:', value: `[${dbeatmapname}](https://osu.ppy.sh/b/${dbeatmapid})`},
+                    { name: 'Difficulty: ', value: ddifficulty + " Stars" },
+                    { name: 'Mods: ', value: dmod },
+                    { name: 'Score:', value: dscore },
+                    { name: 'Accuracy: ', value: dacc + "%" },
+                    { name: 'Combo:', value: dcombo + "x " + fullcombo },
+                    { name: '300/100/50/X', value: `${ddreihundert}/${deinhundert}/${dfünfzig}/${dmiss}`},
+                    { name: 'Rank', value: drank },
+                    { name: `pp`, value: dpp + "pp" },
+                    { name: 'Ranked:', value: dranked }
+                )
+                .setImage(`https://assets.ppy.sh/beatmaps/${dbeatmapsetid}/covers/cover.jpg`)
+                .setTimestamp()
+                .setFooter('Requested by ' + message.author.tag, message.author.avatarURL());
+
+                    message.channel.send(requestEmbed);
+                }
+            }
+            getGay()
+
+       
+        }
+
+
+
+
+    }
+
     if(command == 'stats'){
 
         let color = message.member.displayHexColor;

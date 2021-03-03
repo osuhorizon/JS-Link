@@ -1,13 +1,18 @@
 { 
     "token"  : "discordbot token",
     "prefix" : "/",
-    "version" : "0.7.1",
-    "versionfull" : "071",
+    "version" : "0.7.9",
+    "versionfull" : "079",
     "db" :  {
       "host"  : "localhost",
       "user" : "username",
       "password" : "password",
       "database" : "database"
+    },
+    "api" : {
+      "weburl" : "lemres.de",
+      "banchourl" : "c.lemres.de",
+      "avatarurl" : "a.lemres.de"
     },
     "gayrizon" : {
       "id" : "discord server id || Required",

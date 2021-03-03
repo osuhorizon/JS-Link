@@ -2,5 +2,7 @@
     "rename" : true,
     "clan" : false,
     "activity" : true,
-    "verify" : false
+    "verify" : false,
+    "topplay" : true,
+    "recent" : true
 }
