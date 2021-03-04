@@ -230,7 +230,7 @@ client.on('message', async message => {
                             .setColor(color)
                             .setTitle(`Linking to ${config.link.servername}`)
                             .setURL(config.link.serverlink)
-                            .setAuthor(`${dev.tag}`, `${dev.avatarURL()}`, 'https://github.com/Mxnuuel')
+                            .setAuthor(`${message.author.tag}`, `${message.author.avatarURL()}`, 'https://github.com/Mxnuuel')
                             .setDescription(`Please login ingame and send a private message to ${config.link.botname} with following context: !link ${code}`)
                             .setThumbnail(message.author.avatarURL())
                             .addFields(
@@ -248,6 +248,10 @@ client.on('message', async message => {
 
                                     console.error('Cannot send message to defined user');
                                     message.channel.send('Could not message, please make sure you have private messages enabled.')
+
+                                    con.query(`UPDATE users SET discord_identity = 0 WHERE discord_identity = ${discordid}`, function(err) {
+                                        if (err) throw err;
+                                    });
 
                                 } else {
                                     console.error('Fuck you: ', code.error)
