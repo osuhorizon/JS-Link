@@ -1,8 +1,8 @@
 { 
     "token"  : "discordbot token",
     "prefix" : "/",
-    "version" : "0.9.0",
-    "versionfull" : "090",
+    "version" : "1.0.0",
+    "versionfull" : "100",
     "db" :  {
       "host"  : "localhost",
       "user" : "username",
