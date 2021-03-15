@@ -279,327 +279,26 @@ client.on('message', async message => {
     }
 
     if (command == 'unlink'){
-
-        message.delete().catch(O_o=>{});
-
-        discordid = message.author.id
-        role = config.gayrizon.verified.role
-        target = discordid
-
-        sql = `SELECT id FROM users WHERE discord_identity = ${discordid}`
-        con.query(sql, function (err, result) {
-            if (err) throw err;
-
-            linked = result.length > 0
-
-            if(!linked){
-
-                message.channel.send("You are trying to unlink while not being even linked mate")
-                console.log("User already isn't linked")
-
-            } else {
-
-                con.query(`UPDATE users SET discord_identity = 0 WHERE discord_identity = ${discordid}`, function(err) {
-                    if (err) throw err;
-                });
-
-                if(message.member.roles.cache.has(role)){
-                    message.member.roles.remove(role)
-                }
-
-                message.author.send('You successfully unlinked yourself.')
-            }
-        });
-
+        client.command.get('unlink').execute(message, args)
+    }
+    if (command == 'whois'){
+        client.command.get('whois').execute(message, args)
     }
 
     if (command == 'help'){
-        client.commands.get('help').execute(message, args);
+        client.commands.get('help').execute(message, args)
     }
 
-    if(command == 'recent'){
+    if (command === 'recent'){
+        client.commands.get('recent').execute(message, args)
+    }
 
-
-        if(!settings.recent){
-            message.channel.send("I'm sorry, this command is currently not activated.")
-        } else {
-
-
-            let member = message.mentions.members.first()
-            if (message.mentions.members.size == 1) {
-
-                user = member.id
-                mention = true
-            } else {
-                mention = false
-            }
-
-            const arguments = args.join(" ");
-            const argument = arguments.split(' ')
-
-            const users = [];
-            const users2 = [];
-            const users3 = [];
-            const users4 = [];
-
-            if(mention){
-                self = false
-                if(!argument[0].toLowerCase == ("rx" || "relax" || "ap" || "autopilot" || "auto") || argument[0].includes(member.id)){
-                    rx = 0
-                } else if(argument[0].toLowerCase() == ("rx" || "relax")){
-                    rx = 1
-                } else if(argument[0].toLowerCase() == ("ap" || "autopilot" || "auto")){
-                    rx = 2
-                }
-                if(argument[0].includes(member.id)){
-                    self = false
-
-                    const users_data = await new Promise((resolve) => {
-
-                        con.query(`SELECT id, username from users WHERE discord_identity = ${member.id} ORDER BY id ASC`, (err, result) => {
-        
-                            if (err) throw err;
-    
-                            if(result){
-                            resolve(result);
-                            }
-        
-                        });
-                    });
-        
-                    users_data.forEach(rusers => {
-        
-                        users3.push(rusers)
-        
-                    });
-                    info3 = users3[0]
-                    if(users3.length > 0){
-                        user = info3.username
-                    } else {
-                        message.channel.send("The user you mentioned isn't linked yet!")
-                    }
-
-                }
-
-            } else {
-
-            if(argument[0]){
-
-                if(argument[0].toLowerCase() == ("rx" || "relax")){
-                    rx = 1
-                } else if(argument[0].toLowerCase() == ("ap" || "autopilot" || "auto")){
-                    rx = 2
-                } else if(!argument[0].toLowerCase == ("rx" || "relax" || "ap" || "autopilot" || "auto")){
-                    user = argument[0]
-                    rx = 0
-                }
-
-            } else {
-
-                self = true
-                rx = 0
-
-                const users_data = await new Promise((resolve) => {
-
-                    con.query(`SELECT id, username from users WHERE discord_identity = ${message.author.id} ORDER BY id ASC`, (err, result) => {
-    
-                        if (err) throw err;
-
-                        resolve(result);
-    
-                    });
-                });
-    
-                users_data.forEach(rusers => {
-    
-                    users4.push(rusers)
-    
-                });
-                info4 = users4[0]
-                if(users4.length > 0){
-                    user = info4.username
-                } else {
-                    message.channel.send("Looks like you're not linked yet!")
-                }
-
-            }
-                if(argument[0] && !argument[1]){
-                const users_data = await new Promise((resolve) => {
-
-                    con.query(`SELECT id, username from users WHERE discord_identity = ${message.author.id} ORDER BY id ASC`, (err, result) => {
-    
-                        if (err) throw err;
-
-                        resolve(result);
-    
-                    });
-                });
-    
-                users_data.forEach(rusers => {
-    
-                    users2.push(rusers)
-    
-                });
-                info2 = users2[0]
-                if(users2.length > 0){
-                    user = info2.username
-                } else {
-                    message.channel.send("The user you mentioned isn't linked yet!")
-                }
-
-            }
-        }
-
-                if(!argument[1]){
-                    self = true
-                } else {
-                    if(argument[1].includes(member.id)){
-                        self = false
-        
-                        const users_data = await new Promise((resolve) => {
-        
-                            con.query(`SELECT id, username from users WHERE discord_identity = ${member.id} ORDER BY id ASC`, (err, result) => {
-                    
-                                if (err) throw err;
-                
-                                    resolve(result);
-                    
-                            });
-                        });
-                
-                        users_data.forEach(rusers => {
-                
-                            users.push(rusers)
-                
-                        });
-                        info = users[0]
-                        if(users.length > 0){
-                            user = info.username
-                        } else {
-                            message.channel.send("The user you mentioned isn't linked yet!")
-                        }
-        
-                    } else {
-                        user = argument[1]
-                        self = false
-                    }
-                }
-            if(users.length > 0 || users2.length > 0 || users3.length > 0 || users4.length > 0){
-            apiurl = `https://${config.api.weburl}/api/v1/users/scores/recent?name=${user}&rx=${rx}`
-            userapi = `https://${config.api.weburl}/api/v1/users/full?name=${user}`
-
-
-            function processRecentData(apidata, index, array) {
-                if (apidata.completed >= 3){
-                    if (recentdata.length <= 50){
-                    recentdata.unshift(apidata);
-                    }
-                }
-            }
-
-            const recentdata = [];
-
-            async function getRecent() {
-                const response = await fetch(apiurl);
-                const data = await response.json();
-
-                const userresponse = await fetch (userapi);
-                const userdata = await userresponse.json();
-  
-                did = userdata.id
-                dusername = userdata.username
-                
-                data.scores.forEach(processRecentData);
-            }
-
-
-
-            getRecent()
-
-            async function getGay(){
-                await getRecent()
-                
-                if(recentdata.length > 1){
-
-                yay = "yay"
-
-                dscore = recentdata[0].score
-                dcombo = recentdata[0].max_combo
-                dfc = recentdata[0].full_combo
-                //dmod = data.scores[0].mods
-                ddreihundert = recentdata[0].count_300
-                deinhundert = recentdata[0].count_100
-                dfünfzig = recentdata[0].count_50
-                dmiss = recentdata[0].count_miss
-                daccuracy = recentdata[0].accuracy
-                drank = recentdata[0].rank
-                dcompleted = recentdata[0].completed
-                dbeatmapname = recentdata[0].beatmap.song_name
-                dbeatmapid = recentdata[0].beatmap.beatmap_id
-                dbeatmapsetid = recentdata[0].beatmap.beatmapset_id
-                ddifficultyraw = recentdata[0].beatmap.difficulty
-                dppraw = recentdata[0].pp
-
-
-                ddifficulty = String(ddifficultyraw).substring(0,4)
-                dacc = String(daccuracy).substring(0,5)
-                dpp = String(dppraw).substring(0,6)
-
-                if (dfc){
-                    dfullcombo = "(FC)"
-                } else {
-                    dfullcombo = ""
-                }
-
-            } else {
-                yay = "nay"
-            }
-                const userresponse = await fetch (userapi);
-                const userdata = await userresponse.json();
-
-                if(userdata.code != 200){
-                    message.channel.send("Couldn't find user.")
-                } else if(yay == "nay"){
-                    message.channel.send("No submitted score in the last 50 tries :(")
-                } else {
-                    const requestEmbed = new Discord.MessageEmbed()
-                    .setColor("#cc99ff")
-                    .setTitle(`Recent for ` + dusername)
-                    .setURL(`https://${config.api.weburl}/u/${did}`)
-                    .setAuthor(dusername, `https://${config.api.avatarurl}/${did}`)
-                    .setDescription(`This Score has been played on ${config.link.servername}`)
-                    .setThumbnail(`https://${config.api.avatarurl}/${did}`)
-                    .addFields(
-                    { name: 'Map:', value: `[${dbeatmapname}](https://osu.ppy.sh/b/${dbeatmapid})`},
-                    { name: 'Difficulty: ', value: ddifficulty + " Stars" },
-                    //{ name: 'Mods: ', value: dmod },
-                    { name: 'Score:', value: dscore },
-                    { name: 'Accuracy: ', value: dacc + "%" },
-                    { name: 'Combo:', value: dcombo + "x " + dfullcombo },
-                    { name: '300/100/50/X', value: `${ddreihundert}/${deinhundert}/${dfünfzig}/${dmiss}`},
-                    { name: 'Rank', value: drank },
-                    { name: `pp`, value: dpp + "pp" },
-                )
-                .setImage(`https://assets.ppy.sh/beatmaps/${dbeatmapsetid}/covers/cover.jpg`)
-                .setTimestamp()
-                .setFooter('Requested by ' + message.author.tag, message.author.avatarURL());
-
-                    message.channel.send(requestEmbed);
-                }
-            }
-
-            getGay()
-        }
-
-        }
-
-
-
-
+    if(command == 'top'){
+        client.commands.get('top').execute(message, args)
     }
 
     if(command == 'stats'){
-
+    
         let color = message.member.displayHexColor;
         if (color == '#000000') color = message.member.hoistRole.hexColor;
 
@@ -623,7 +322,7 @@ client.on('message', async message => {
             { name: 'Channel:', value: client.channels.cache.size },
         )
         .setTimestamp()
-        .setFooter(`If there is any problem please message ${dev.id}`, `${dev.avatarURL()}`)
+        .setFooter(`If there is any problem please message ${dev.tag}`, `${dev.avatarURL()}`)
 
         message.channel.send(statsembed)
         });
