@@ -11,7 +11,7 @@ This Discord bot handles Donators and has a link feature for osu private server.
 You have to fill out the config.json file and utils/settings.json file
 ```
 $ nano config.json
-$ nano utils/config.json
+$ nano utils/settings.json
 ```
 
 Then start the bot
