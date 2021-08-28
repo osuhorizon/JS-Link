@@ -97,14 +97,7 @@ client.on('ready', async () => {
                 verified = config.gayrizon.verified.role
                 donator = config.gayrizon.donator.role
 
-                var privileges = 4 % full.rank
-                let status;
-
-                if (privileges = 4){
-                    status = true
-                } else {
-                    status = false
-                }
+                var status = (full.rank & 2 << 1) != 0;
 
                 if(full.id != config.gayrizon.owner){
 
