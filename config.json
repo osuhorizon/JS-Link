@@ -1,38 +1,53 @@
-{ 
-    "token"  : "discordbot token",
-    "prefix" : "/",
-    "version" : "1.0.0",
-    "versionfull" : "100",
+{
+    "token"  : "discord bot token",
+    "prefix" : ">>",
+    "version" : "2.0.0",
+    "settings" : {
+        "verify" : true,
+        "rename" : true,
+        "clan" : true
+    },
     "db" :  {
-      "host"  : "localhost",
-      "user" : "username",
-      "password" : "password",
-      "database" : "database"
-    },
-    "api" : {
-      "weburl" : "lemres.de",
-      "banchourl" : "c.lemres.de",
-      "avatarurl" : "a.lemres.de"
-    },
-    "gayrizon" : {
-      "id" : "discord server id || Required",
-      "owner" : "discord server owner id || Required",
-      "verified" : {
-        "channel" : "verify-channel if there is one || Optional",
-        "role" : "verified-role if there is one || Optional (Toggle in settings)"
+        "host"  : "localhost",
+        "user" : "root",
+        "password" : "password",
+        "database" : "database"
       },
-      "donator" : {
-        "role" : "donator-role || Required"
+      "api" : {
+        "weburl" : "lemres.de",
+        "banchourl" : "c.lemres.de",
+        "avatarurl" : "a.lemres.de"
       },
-      "activity" : {
-        "name" : "on osu!Horizon || Optional (Toggle in settings)",
-        "type" : "PLAYiNG || Optional (Toggle in settings)"
+      "server" : {
+        "id" : "server id",
+        "owner" : "server owner id",
+        "verified" : {
+          "channel" : "verify channel id",
+          "role" : "verified role id"
+        },
+        "donator" : {
+          "role" : "donator role id"
+        }
+      },
+      "link" : {
+        "servername" : "Horizon",
+        "botname" : "Daydreamer",
+        "serverlink" : "https://lemres.de",
+        "logo" : "https://lemres.de/static/logo.png"
+      },
+      "webhooks" : {
+        "enable" : true,
+        "restrict" : {
+          "id" : "",
+          "token" : "'"
+        },
+        "beatmap" : {
+          "id" : "",
+          "token" : ""
+        },
+        "rename" : {
+          "id" : "",
+          "token" : ""
+        }
       }
-    },
-    "link" : {
-      "servername" : "Horizon",
-      "botname" : "Daydreamer",
-      "serverlink" : "https://lemres.de",
-      "logo" : "https://x.mxnuuel.de/notnanoo-logo.png"
-    }
 }

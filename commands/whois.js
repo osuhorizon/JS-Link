@@ -1,8 +1,30 @@
-require("../utils/function")();
 module.exports = {
     name: 'whois',
-    description: "owo?",
-    execute(message, args){
+    description: "who is this?",
+    async execute(message, args){
+        const moment = require("moment");
+        const { request } = require('../helper/database.js')
+        const { checkForUser } = require('../helper/osu.js')
+
+        const check = checkForUser(message, args)
+
+        const user = check.db ? await db.redis.osuGet(`horizon`, check.user) : check.user
+        if(user == null) return message.channel.send("The user you are trying to get isn't linked yet!")
+        const mode = check.short
+
+        const req = await fetch(`https://lemres.de/api/v1/users/full?name=${user}`)
+
+        const data = await req.json()
+
+        if(data.code != 200) return message.channel.send(`Couldn't find user "${user}"`)
+
+        var onlineResponse = await fetch(`https://c.lemres.de/api/v1/playerstatus?uid=${data.id}`)
+        var onlinedata = await onlineResponse.json();
+
+        const { id, username, country, registered, privileges } = data
+        const { rank, level, accuracy, pp, playtime, playcount, score, crank } = data[mode]
+
+        const online = onlinedata.Status
 
         async function whoisCommand(){
 
