@@ -23,7 +23,7 @@ $ nano config.json
 
 start the bot
 ```
-$ node index.js
+$ node main.js
 ```
 
 profit.
