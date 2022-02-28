@@ -15,14 +15,14 @@ module.exports = {
         const month = date.substring(5,7)
         const day = date.substring(8,10)
         const time = date.substring(11,19)
-        const date = `${day}.${month}.${year}`
+        const fulldate = `${day}.${month}.${year}`
 
         return {
             day: day,
             month: month,
             year: year,
             time: time,
-            date: date
+            date: fulldate
         }
     }
 }

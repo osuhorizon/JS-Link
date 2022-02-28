@@ -30,7 +30,7 @@ module.exports = {
 
         await request(`UPDATE users SET notes = "${user[0].notes}\r\n[${time}] ${text}" WHERE id = '${id}'`)
     },
-    checkForUser : function(message, args){
+    checkForUser : async function(message, args){
         const modes = ["std", "taiko", "catch", "mania"]
         const modename = ["Standard", "Taiko", "Catch the Beat", "Mania"]
         
@@ -45,5 +45,19 @@ module.exports = {
             if(!args[1]) return {db: true, user: message.author.id, mode: modeid, modename : modename[modeid], short: modes[modeid]} 
             return {db: false, user: args[1], mode: modeid, modename : modename[modeid], short: modes[modeid]} 
         }
+    },
+    mods : async function(mods){
+        var modsString = ["NF", "EZ", "NV", "HD", "HR", "SD", "DT", "RX", "HT", "NC", "FL", "AU", "SO", "AP", "PF", "K4", "K5", "K6", "K7", "K8", "K9", "RN", "LM", "K9", "K0", "K1", "K3", "K2"];
+        function getScoreMods(e, t) {
+            var n = [];
+            return 512 == (512 & e) && (e &= -65), 16384 == (16384 & e) && (e &= -33), modsString.forEach(function(t, i) {
+                var o = 1 << i;
+            (e & o) > 0 && n.push(t)
+            }), n.length > 0 ? (t ? "" : "") + n.join(", ") : t ? "None" : ""
+        }
+
+        var modsString = getScoreMods(mods, false);
+
+        return modsString
     }
 }

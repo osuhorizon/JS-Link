@@ -3,6 +3,7 @@ const red = require('redis')
 const config = require('../config.json')
 
 module.exports = {
+
     connect: async function(){
         con = mysql.createConnection({
             host: config.db.host,

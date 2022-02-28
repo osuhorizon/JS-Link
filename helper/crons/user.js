@@ -3,6 +3,7 @@ const { server, settings } = require('../../config.json')
 
 module.exports = {
     verify : async function(client){
+        if(!settings.verify) return;
         const users = await request(`SELECT * FROM users WHERE discord_identity != '0'`)
         
         const guild = client.guilds.cache.get(server.id)
@@ -31,15 +32,13 @@ module.exports = {
             let error = 0;
     
             const member = await guild.members.fetch(user).catch(async (err) => {
-                if(err.code == 10013){
+                if(err.code == 10013 || err.code == 10007){
                     error++
                     await request(`UPDATE users SET discord_identity = '0' WHERE discord_identity = '${user}'`)
                 }  
             })
     
             if(error) continue;
-    
-            if(!settings.verify) continue;
     
             if(!member.roles.cache.has(server.verified.role)) member.roles.add(server.verified.role)
     
